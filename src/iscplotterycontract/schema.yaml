@@ -1,0 +1,63 @@
+name: ISCPLotteryContract
+description: ISCPLotteryContract description
+
+events: {}
+
+structs:
+  Ticket:
+    idx: Int32 // index of ticket
+    id: RequestID // request id of the ticket
+    roundIdx: Int32 // the lottery round number
+    buyer: AgentID // the ticket buyer
+    number: String // the lottery number of the ticket
+    amount: Int64 // iota amount of the ticket
+    prizeAmount: Int64 // iota prize amount of the ticket
+    isPaid: Bool // is the prize paid?
+    createdAt: Int64 // unix timestamp when the ticket create
+  Round:
+    idx: Int32 // index of lottery round
+    winningNumber: String // the winning numbers of the round
+    prizePool: Int64 // iota price pool of the round
+    drawAt: Int64 // unix timestamp when draw of the round
+    isDrawn: Bool // is the round drawn?
+
+typedefs: {}
+
+state:
+  owner: AgentID // current owner of this smart contract
+  rounds: Round[] // lottery rounds
+  currentRoundIdx: Int32 // the current lottery round
+  tickets: Ticket[] // the current round tickets
+  historyTickets: Ticket[] // the history of the previous round tickets
+
+funcs:
+  init:
+    params:
+      owner: AgentID? // optional owner of this smart contract
+  setOwner:
+    access: owner // current owner of this smart contract
+    params:
+      owner: AgentID // new owner of this smart contract
+  createTicket:
+    params:
+      number: String // the lottery number of the ticket
+  getMyTickets:
+    results:
+      tickets: Ticket[]
+  getMyHistoryTickets:
+    results:
+      tickets: Ticket[]
+  draw:
+    access: self // only SC itself can invoke this function
+views:
+  getOwner:
+    results:
+      owner: AgentID // current owner of this smart contract
+  getCurrentRound:
+    results:
+      round: Round
+  getRound:
+    params:
+      roundIdx: Int32
+    results:
+      round: Round
