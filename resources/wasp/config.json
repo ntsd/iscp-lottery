@@ -3,7 +3,7 @@
     "directory": "waspdb"
   },
   "logger": {
-    "level": "warning",
+    "level": "info",
     "disableCaller": false,
     "disableStacktrace": true,
     "encoding": "console",
