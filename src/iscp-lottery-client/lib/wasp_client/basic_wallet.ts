@@ -1,8 +1,8 @@
-import { Base58 } from './crypto';
-import { Buffer } from './buffer';
-import { ColorCollection, Colors } from './colors';
-import { Transaction } from './transaction';
-import type { BasicClient } from './basic_client';
+import { Base58 } from "./crypto";
+import { Buffer } from "./buffer";
+import { ColorCollection, Colors } from "./colors";
+import { Transaction } from "./transaction";
+import type { BasicClient } from "./basic_client";
 import type {
   IKeyPair,
   ITransaction,
@@ -11,7 +11,7 @@ import type {
   IUnspentOutputsResponse,
   IWalletAddressOutput,
   IWalletOutput,
-} from './models';
+} from "./models";
 
 export type BuiltOutputResult = {
   [address: string]: {
@@ -40,10 +40,14 @@ export class BasicWallet {
     return colorCollection;
   }
 
-  public async getUnspentOutputs(address: string): Promise<Array<IWalletAddressOutput>> {
+  public async getUnspentOutputs(
+    address: string
+  ): Promise<Array<IWalletAddressOutput>> {
     const unspents = await this.client.unspentOutputs({ addresses: [address] });
 
-    const usedAddresses = unspents.unspentOutputs.filter((u) => u.outputs.length > 0);
+    const usedAddresses = unspents.unspentOutputs.filter(
+      (u) => u.outputs.length > 0
+    );
 
     const unspentOutputs = usedAddresses.map((uo) => ({
       address: uo.address.base58,
@@ -57,8 +61,13 @@ export class BasicWallet {
     return unspentOutputs;
   }
 
-  public determineOutputsToConsume(unspentOutputs: IWalletAddressOutput[], iotas: bigint): ConsumedOutputs {
-    const outputsToConsume: { [address: string]: { [outputID: string]: IWalletOutput } } = {};
+  public determineOutputsToConsume(
+    unspentOutputs: IWalletAddressOutput[],
+    iotas: bigint
+  ): ConsumedOutputs {
+    const outputsToConsume: {
+      [address: string]: { [outputID: string]: IWalletOutput };
+    } = {};
 
     let iotasLeft = iotas;
 
@@ -109,7 +118,7 @@ export class BasicWallet {
     remainderAddress: string,
     destinationAddress: string,
     iotas: bigint,
-    consumedFunds: ColorCollection,
+    consumedFunds: ColorCollection
   ): BuiltOutputResult {
     const outputsByColor: { [address: string]: ColorCollection } = {};
 
@@ -133,7 +142,7 @@ export class BasicWallet {
     // build outputs for remainder
     if (Object.keys(consumedFunds).length > 0) {
       if (!remainderAddress) {
-        throw new Error('No remainder address available');
+        throw new Error("No remainder address available");
       }
       if (!outputsByColor[remainderAddress]) {
         outputsByColor[remainderAddress] = {};
@@ -162,7 +171,9 @@ export class BasicWallet {
     return outputsBySlice;
   }
 
-  public buildInputs(outputsToUseAsInputs: { [address: string]: { [outputID: string]: IWalletOutput } }): {
+  public buildInputs(outputsToUseAsInputs: {
+    [address: string]: { [outputID: string]: IWalletOutput };
+  }): {
     /**
      * The inputs to send.
      */
@@ -180,7 +191,8 @@ export class BasicWallet {
         inputs.push(outputID);
 
         for (const color in outputsToUseAsInputs[address][outputID].balances) {
-          const balance = outputsToUseAsInputs[address][outputID].balances[color];
+          const balance =
+            outputsToUseAsInputs[address][outputID].balances[color];
 
           if (!consumedFunds[color]) {
             consumedFunds[color] = balance;
@@ -201,7 +213,7 @@ export class BasicWallet {
     keyPair: IKeyPair,
     address: string,
     consumedOutputs: ConsumedOutputs,
-    builtInputs: string[],
+    builtInputs: string[]
   ): Array<IUnlockBlock> {
     const unlockBlocks: IUnlockBlock[] = [];
     const txEssence = Transaction.essence(tx, Buffer.alloc(0));
@@ -215,7 +227,6 @@ export class BasicWallet {
 
     const existingUnlockBlocks: { [address: string]: number } = {};
     // TODO: Update this in the next refactoring.
-    // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (const index in builtInputs) {
       const addr = address == addressByOutputID[builtInputs[index]];
       if (addr) {

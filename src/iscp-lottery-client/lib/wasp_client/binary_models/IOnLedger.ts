@@ -1,8 +1,8 @@
-import type { Buffer } from '../buffer';
+import type { Buffer } from "../buffer";
 
 export interface OnLedgerArgument {
   key: string;
-  value: number;
+  value: any;
 }
 
 export interface IOnLedger {

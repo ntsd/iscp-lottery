@@ -22,7 +22,7 @@ export class OffLedger {
 
     for (let i = 0; i < numArguments; i++) {
       const sz16 = reader.readUInt16LE();
-      const key = reader.readBytes(sz16);
+      const key = reader.readBytes(sz16).toString();
       const sz32 = reader.readUInt32LE();
       const value = reader.readBytes(sz32);
 
@@ -39,7 +39,7 @@ export class OffLedger {
       const colorBytes = reader.readBytes(colorLength);
       const balance = reader.readUInt64LE();
 
-      balances.push({ color: colorBytes, balance: balance });
+      balances.push({ color: colorBytes as Buffer, balance: balance });
     }
 
     const signature = reader.readBytes(signatureSize);

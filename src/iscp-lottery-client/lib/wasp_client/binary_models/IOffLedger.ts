@@ -1,8 +1,8 @@
-import type { Buffer } from '../buffer';
+import type { Buffer } from "../buffer";
 
 export interface OffLedgerArgument {
   key: string;
-  value: number;
+  value: any;
 }
 
 export interface Balance {
