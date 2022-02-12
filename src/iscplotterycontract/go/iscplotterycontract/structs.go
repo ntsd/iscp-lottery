@@ -74,29 +74,31 @@ func (o MutableRound) Value() *Round {
 }
 
 type Ticket struct {
-	Amount      int64  // iota amount of the ticket
-	Buyer       wasmlib.ScAgentID  // the ticket buyer
-	CreatedAt   int64  // unix timestamp when the ticket create
-	Id          wasmlib.ScRequestID  // request id of the ticket
-	Idx         int32  // index of ticket
-	IsPaid      bool  // is the prize paid?
-	Number      string  // the lottery number of the ticket
-	PrizeAmount int64  // iota prize amount of the ticket
-	RoundIdx    int32  // the lottery round number
+	Amount       int64  // iota amount of the ticket
+	Buyer        wasmlib.ScAgentID  // the ticket buyer
+	CreatedAt    int64  // unix timestamp when the ticket create
+	Id           wasmlib.ScRequestID  // request id of the ticket
+	Idx          int32  // index of ticket
+	IsPaid       bool  // is the prize paid?
+	MatchedDigit uint8  // how many digits matched
+	Number       string  // the lottery number of the ticket
+	PrizeAmount  int64  // iota prize amount of the ticket
+	RoundIdx     int32  // the lottery round number
 }
 
 func NewTicketFromBytes(bytes []byte) *Ticket {
 	decode := wasmlib.NewBytesDecoder(bytes)
 	data := &Ticket{}
-	data.Amount      = decode.Int64()
-	data.Buyer       = decode.AgentID()
-	data.CreatedAt   = decode.Int64()
-	data.Id          = decode.RequestID()
-	data.Idx         = decode.Int32()
-	data.IsPaid      = decode.Bool()
-	data.Number      = decode.String()
-	data.PrizeAmount = decode.Int64()
-	data.RoundIdx    = decode.Int32()
+	data.Amount       = decode.Int64()
+	data.Buyer        = decode.AgentID()
+	data.CreatedAt    = decode.Int64()
+	data.Id           = decode.RequestID()
+	data.Idx          = decode.Int32()
+	data.IsPaid       = decode.Bool()
+	data.MatchedDigit = decode.Uint8()
+	data.Number       = decode.String()
+	data.PrizeAmount  = decode.Int64()
+	data.RoundIdx     = decode.Int32()
 	decode.Close()
 	return data
 }
@@ -109,6 +111,7 @@ func (o *Ticket) Bytes() []byte {
 		RequestID(o.Id).
 		Int32(o.Idx).
 		Bool(o.IsPaid).
+		Uint8(o.MatchedDigit).
 		String(o.Number).
 		Int64(o.PrizeAmount).
 		Int32(o.RoundIdx).

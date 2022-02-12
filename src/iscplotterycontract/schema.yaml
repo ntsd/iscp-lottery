@@ -12,6 +12,7 @@ structs:
     number: String // the lottery number of the ticket
     amount: Int64 // iota amount of the ticket
     prizeAmount: Int64 // iota prize amount of the ticket
+    matchedDigit: Uint8 // how many digits matched
     isPaid: Bool // is the prize paid?
     createdAt: Int64 // unix timestamp when the ticket create
   Round:

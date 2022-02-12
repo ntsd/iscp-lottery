@@ -13,12 +13,12 @@ const ROUND_PERIOD = int64(86400) // 1 day
 const MAX_DIGIT = int(6)          // max random digit
 const MAX_NUMBER = int64(999999)  // the max random number
 
-const FIRST_1_PRIZE_PERCENT = int64(2)
-const FIRST_2_PRIZE_PERCENT = int64(4)
-const FIRST_3_PRIZE_PERCENT = int64(6)
-const FIRST_4_PRIZE_PERCENT = int64(12)
-const FIRST_5_PRIZE_PERCENT = int64(25)
-const FIRST_6_PRIZE_PERCENT = int64(50)
+const MATCH_1_PRIZE_PERCENT = int64(2)
+const MATCH_2_PRIZE_PERCENT = int64(4)
+const MATCH_3_PRIZE_PERCENT = int64(6)
+const MATCH_4_PRIZE_PERCENT = int64(12)
+const MATCH_5_PRIZE_PERCENT = int64(25)
+const MATCH_6_PRIZE_PERCENT = int64(50)
 
 const FEE_PERCENT = int64(1)
 
@@ -46,6 +46,10 @@ func funcCreateTicket(ctx wasmlib.ScFuncContext, f *CreateTicketContext) {
 
 	// get params
 	buyNumber := f.Params.Number().Value()
+	if len(buyNumber) != MAX_DIGIT {
+		ctx.Log("invalid number")
+		return
+	}
 
 	// get state
 	tickets := f.State.Tickets()
@@ -90,15 +94,39 @@ func funcDraw(ctx wasmlib.ScFuncContext, f *DrawContext) {
 	currentRound.WinningNumber = winningNumberStr
 	currentRound.IsDrawn = true
 
-	// prize
+	// calculate prize pool
 	prizePool := currentRound.PrizePool
 	prizePoolsByDigit := make(map[int]int64)
-	prizePoolsByDigit[1] = prizePool * FIRST_1_PRIZE_PERCENT / 100
-	prizePoolsByDigit[2] = prizePool * FIRST_2_PRIZE_PERCENT / 100
-	prizePoolsByDigit[3] = prizePool * FIRST_3_PRIZE_PERCENT / 100
-	prizePoolsByDigit[4] = prizePool * FIRST_4_PRIZE_PERCENT / 100
-	prizePoolsByDigit[5] = prizePool * FIRST_5_PRIZE_PERCENT / 100
-	prizePoolsByDigit[6] = prizePool * FIRST_6_PRIZE_PERCENT / 100
+	prizePoolsByDigit[0] = 0
+	prizePoolsByDigit[1] = prizePool * MATCH_1_PRIZE_PERCENT / 100
+	prizePoolsByDigit[2] = prizePool * MATCH_2_PRIZE_PERCENT / 100
+	prizePoolsByDigit[3] = prizePool * MATCH_3_PRIZE_PERCENT / 100
+	prizePoolsByDigit[4] = prizePool * MATCH_4_PRIZE_PERCENT / 100
+	prizePoolsByDigit[5] = prizePool * MATCH_5_PRIZE_PERCENT / 100
+	prizePoolsByDigit[6] = prizePool * MATCH_6_PRIZE_PERCENT / 100
+
+	// count winner by digit
+	prizeWinnerByDigit := make(map[int]int64)
+	for i := int32(0); i <= ticketsLen; i++ {
+		ticket := tickets.GetTicket(i).Value()
+
+		matchedCount := 0
+		for i := 0; i <= MAX_DIGIT; i++ {
+			if ticket.Number[i] == winningNumberStr[i] {
+				matchedCount += 1
+			}
+		}
+		prizeWinnerByDigit[matchedCount] += 1
+
+		ticket.MatchedDigit = uint8(matchedCount)
+		tickets.GetTicket(i).SetValue(ticket)
+	}
+
+	// destribute prize pool
+	prizePerTicketsByDigit := make(map[int]int64)
+	for i := 1; i <= MAX_DIGIT; i++ {
+		prizePerTicketsByDigit[i] = prizePoolsByDigit[i] / prizeWinnerByDigit[i]
+	}
 
 	// new round
 }

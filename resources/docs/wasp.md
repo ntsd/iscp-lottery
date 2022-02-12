@@ -54,8 +54,8 @@ wasp-cli chain deploy --committee=0 --quorum=1 --chain=iscp-lottery-chain --desc
 wasp-cli chain deposit IOTA:10000
 
 # Set wasp-cli chain ID you can find chain id from `http://127.0.0.1:7000/chains` usr/pass: wasp/wasp
-wasp-cli set chains.testchain {chain-id}
-wasp-cli set chain testchain
+wasp-cli set chains.test-chain {chain-id}
+wasp-cli set chain test-chain
 ```
 
 ## Build the smart contract
