@@ -20,8 +20,15 @@ you can find testnet endpoint here <https://wiki.iota.org/smart-contracts/guide/
 
 for now we using `goshimmer.sc.iota.org:5000`
 
-```Shell
+```shell
 make run-wasp
+```
+
+Run local Shimmer and Wasp node by Docker
+
+```shell
+cd tools/devnet
+HOST=0.0.0.0 docker-compose up -d
 ```
 
 ## Configuring wasp-cli
@@ -29,8 +36,13 @@ make run-wasp
 ```shell
 wasp-cli init
 
-# Set go shimmer api and request fund
+# Set go shimmer api
 wasp-cli set goshimmer.api https://api.goshimmer.sc.iota.org
+
+# for local go shimmer
+wasp-cli set goshimmer.api 127.0.0.1:8080
+
+# Request fund
 wasp-cli request-funds
 wasp-cli balance
 
@@ -46,11 +58,11 @@ wasp-cli set wasp.0.peering 127.0.0.1:4000
 # Trust node
 wasp-cli peering info
 wasp-cli peering trust {PubKey} 127.0.0.1:4000
-wasp-cli peering list-trusted
-
-# OR
+# or
 wasp-cli peering trust $(wasp-cli peering info | grep PubKey | sed -e "s/^PubKey\:\s//") 127.0.0.1:4000
 
+# checking trusted nodes
+wasp-cli peering list-trusted
 
 # Deploy The Chain
 # `committee` will correspond to wasp.0, wasp.1 in `wasp-cli.json`
