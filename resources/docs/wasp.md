@@ -2,9 +2,11 @@
 
 ## Download Wasp and wasp-cli
 
-<https://wiki.iota.org/wasp/guide/chains_and_nodes/running-a-node#download-wasp>
+<https://wiki.iota.org/smart-contracts/guide/chains_and_nodes/running-a-node#download-wasp>
 
 ```SHELL
+git clone https://github.com/iotaledger/wasp
+cd wasp
 brew install rocksdb
 make install
 ```
@@ -13,7 +15,7 @@ make install
 
 Run A Wasp node will connecting to goshimmer using TXStream.
 
-you can find testnet endpoint here <https://wiki.iota.org/wasp/guide/chains_and_nodes/testnet#endpoints>
+you can find testnet endpoint here <https://wiki.iota.org/smart-contracts/guide/chains_and_nodes/testnet#endpoints>
 
 for now we using `goshimmer.sc.iota.org:5000`
 
@@ -47,7 +49,7 @@ wasp-cli peering list-trusted
 
 # Deploy The Chain
 # `committee` will correspond to wasp.0, wasp.1 in `wasp-cli.json`
-# `quorum` is minimum amount node
+# `quorum` is the minimum amount of nodes required to form a consensus (recommend floor(N*2/3)+1 whre N = number of nodes)
 wasp-cli chain deploy --committee=0 --quorum=1 --chain=iscp-lottery-chain --description="ISCP Lottery Chain"
 
 # Deposit money to the chain
