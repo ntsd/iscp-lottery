@@ -48,6 +48,10 @@ wasp-cli peering info
 wasp-cli peering trust {PubKey} 127.0.0.1:4000
 wasp-cli peering list-trusted
 
+# OR
+wasp-cli peering trust $(wasp-cli peering info | grep PubKey | sed -e "s/^PubKey\:\s//") 127.0.0.1:4000
+
+
 # Deploy The Chain
 # `committee` will correspond to wasp.0, wasp.1 in `wasp-cli.json`
 # `quorum` is the minimum amount of nodes required to form a consensus (recommend floor(N*2/3)+1 whre N = number of nodes)
