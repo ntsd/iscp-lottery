@@ -39,7 +39,7 @@ wasp-cli init
 # Set go shimmer api
 wasp-cli set goshimmer.api https://api.goshimmer.sc.iota.org
 
-# for local go shimmer
+# orfor local go shimmer
 wasp-cli set goshimmer.api 127.0.0.1:8080
 
 # Request fund
@@ -75,18 +75,6 @@ wasp-cli chain deposit IOTA:10000
 # Set wasp-cli chain ID you can find chain id from `http://127.0.0.1:7000/chains` usr/pass: wasp/wasp
 wasp-cli set chains.test-chain {chain-id}
 wasp-cli set chain test-chain
-```
-
-## Build the smart contract
-
-```shell
-make build-wasm
-```
-
-## Deploy the smart contract
-
-```Shell
-make deploy-wasm
 ```
 
 ## Deactivate chain

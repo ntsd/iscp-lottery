@@ -5,3 +5,7 @@ A decentralised lottery system on IOTA Smart Contract Protocol (ISCP). Inspirati
 ## Setiing WASP Node
 
 </resources/docs/wasp.md>
+
+## Build/Deploy Smart Contract
+
+</resources/docs/smart-contract.md>
