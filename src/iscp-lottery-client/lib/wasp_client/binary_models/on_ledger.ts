@@ -1,7 +1,6 @@
-import { OnLedgerArgument } from ".";
-import { Buffer } from "../buffer";
-import { SimpleBufferCursor } from "../simple_buffer_cursor";
-import type { IOnLedger } from "./IOnLedger";
+import { Buffer } from '../buffer';
+import { SimpleBufferCursor } from '../simple_buffer_cursor';
+import type { IOnLedger } from './IOnLedger';
 
 export class OnLedger {
   public static ToStruct(buffer: Buffer): IOnLedger {
@@ -11,25 +10,23 @@ export class OnLedger {
     const entrypoint = reader.readUInt32LE();
     const numArguments = reader.readUInt32LE();
 
-    const args: OnLedgerArgument[] = [];
-
+    const args = [];
     for (let i = 0; i < numArguments; i++) {
       const sz16 = reader.readUInt16LE();
-      const key = reader.readBytes(sz16).toString();
+      const key = reader.readBytes(sz16);
       const sz32 = reader.readUInt32LE();
       const value = reader.readBytes(sz32);
-
       args.push({ key: key, value: value });
     }
 
-    const onLedgerStruct: IOnLedger = {
+    const offLedgerStruct: IOnLedger = {
       contract: contract,
       entrypoint: entrypoint,
       arguments: args,
       noonce: 0,
     };
 
-    return onLedgerStruct;
+    return offLedgerStruct;
   }
 
   public static ToBuffer(req: IOnLedger): Buffer {
@@ -41,9 +38,8 @@ export class OnLedger {
     buffer.writeBytes(Buffer.alloc(1, 0));
 
     buffer.writeUInt32LE(req.arguments.length || 0);
-
     if (req.arguments) {
-      req.arguments.sort((lhs, rhs) => lhs.key.localeCompare(rhs.key));
+      req.arguments.sort((lhs,rhs)=> lhs.key.localeCompare(rhs.key));
       for (const arg of req.arguments) {
         const keyBuffer = Buffer.from(arg.key);
 

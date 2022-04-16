@@ -1,13 +1,13 @@
-import type { Buffer } from "../buffer";
+import type { Buffer } from '../buffer';
 
 export interface OnLedgerArgument {
   key: string;
-  value: any;
+  value: number;
 }
 
 export interface IOnLedger {
-  contract: number;
-  entrypoint: number;
-  arguments: OnLedgerArgument[];
+  contract?: number;
+  entrypoint?: number;
+  arguments?: OnLedgerArgument[];
   noonce?: number;
 }

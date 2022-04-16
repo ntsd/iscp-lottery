@@ -1,9 +1,8 @@
-import { Base58 } from "./base58";
-import { blake2b } from "blakejs";
-import { Buffer } from "../buffer";
-import { ED25519 } from "./ed25519";
-import type { IKeyPair } from "../models";
-import * as crypto from "crypto";
+import { Base58 } from './base58';
+import { blake2b } from 'blakejs';
+import { Buffer } from '../buffer';
+import { ED25519 } from './ed25519';
+import type { IKeyPair } from '../models';
 
 export class Seed {
   /**
@@ -15,10 +14,10 @@ export class Seed {
    * @returns The random seed.
    */
   public static generate(): Buffer {
-    console.log('generating a new seed');
+    const cryptoObj: Crypto = window.crypto;
     const array = new Uint32Array(Seed.SEED_SIZE);
 
-    crypto.getRandomValues(array);
+    cryptoObj.getRandomValues(array);
 
     return Buffer.from(array);
   }
@@ -33,11 +32,7 @@ export class Seed {
     const indexBytes = Buffer.alloc(8);
     indexBytes.writeBigUInt64LE(BigInt(index), 0);
 
-    const hashOfPaddedBuffer = blake2b(
-      indexBytes,
-      undefined,
-      32 /* Blake256 */
-    );
+    const hashOfPaddedBuffer = blake2b(indexBytes, undefined, 32 /* Blake256 */);
 
     const subseed = Buffer.alloc(this.SEED_SIZE);
     Seed.xorBytes(seed, Buffer.from(hashOfPaddedBuffer), subseed);
