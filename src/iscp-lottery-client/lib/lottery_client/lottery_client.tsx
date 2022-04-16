@@ -25,9 +25,11 @@ export const LotteryClientProvider: React.FC = ({ children }) => {
     Configs.chainId
   );
 
-  //Public API that will echo messages sent to it back to the client
+  // Public websocket api that will echo messages sent to it back to the client
   const [socketUrl, setSocketUrl] = useState(webSocketUrl);
 
+  // Initialize websocket
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
   return <>{children}</>;
 };

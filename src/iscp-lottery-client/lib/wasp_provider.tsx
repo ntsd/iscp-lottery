@@ -1,4 +1,3 @@
-import { LotteryClient } from "./lottery_client/fair_roulette";
 import {
   addressStateAtom,
   keyPairStateAtom,
@@ -12,6 +11,7 @@ import { useRecoilState } from "recoil";
 import { Configs } from "../config";
 import { BasicClient, Colors, WalletService } from "./wasp_client";
 import { Seed } from "./wasp_client/crypto/seed";
+import { LotteryClientProvider } from "./lottery_client/lottery_client";
 
 export const WaspProvider: React.FC = (props) => {
   const [clientState, setClientState] = useRecoilState(clientStateAtom);
@@ -56,10 +56,10 @@ export const WaspProvider: React.FC = (props) => {
     setBalanceState(_balance);
   }
 
-  const lotteryClient = new LotteryClient(client, Configs.chainId);
-  lotteryClient.getCurrentRound().then((round) => {
-    console.log(round);
-  });
+  // const lotteryClient = new LotteryClient(client, Configs.chainId);
+  // lotteryClient.getCurrentRound().then((round) => {
+  //   console.log(round);
+  // });
 
-  return <>{props.children}</>;
+  return <LotteryClientProvider>{props.children}</LotteryClientProvider>;
 };
