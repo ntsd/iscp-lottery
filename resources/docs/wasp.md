@@ -1,13 +1,13 @@
 # Setup WASP Node
 
-## Download Wasp and wasp-cli
+## Download and Install Wasp v0.2.5 and wasp-cli
 
 Install RockDB <https://github.com/facebook/rocksdb/blob/master/INSTALL.md>
 
 <https://wiki.iota.org/smart-contracts/guide/chains_and_nodes/running-a-node#download-wasp>
 
 ```SHELL
-git clone https://github.com/iotaledger/wasp
+git clone -b v0.2.5 https://github.com/iotaledger/wasp
 cd wasp
 make install
 ```

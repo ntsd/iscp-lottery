@@ -238,6 +238,7 @@ github.com/bytecodealliance/wasmtime-go v0.21.0 h1:8C6fNmpfzF6QQ9h0PCvGaYORhtgMv
 github.com/bytecodealliance/wasmtime-go v0.21.0/go.mod h1:q320gUxqyI8yB+ZqRuaJOEnGkAnHh6WtJjMaT2CW4wI=
 github.com/bytecodealliance/wasmtime-go v0.31.0 h1:AbMdV1pwjw/0Ito5yARcGzY366cq5NIiDk5vpy1c2Lw=
 github.com/bytecodealliance/wasmtime-go v0.31.0/go.mod h1:q320gUxqyI8yB+ZqRuaJOEnGkAnHh6WtJjMaT2CW4wI=
+github.com/bytecodealliance/wasmtime-go v0.34.0/go.mod h1:q320gUxqyI8yB+ZqRuaJOEnGkAnHh6WtJjMaT2CW4wI=
 github.com/c-bata/go-prompt v0.2.2 h1:uyKRz6Z6DUyj49QVijyM339UJV9yhbr70gESwbNU3e0=
 github.com/c-bata/go-prompt v0.2.2/go.mod h1:VzqtzE2ksDBcdln8G7mk2RX9QyGjH+OVqOCSiVIqS34=
 github.com/capossele/asset-registry v0.0.0-20210521112927-c9d6e74574e8 h1:lCaU8zjlV8f06WK3jlruYmTUPVumZ4sxj0CEyg/k0IU=
@@ -827,6 +828,7 @@ github.com/iotaledger/wasp v0.2.2 h1:nPkjcjH8+EzfAIsAx74tNLfkyWXuqMnTSILPKnoH8r0
 github.com/iotaledger/wasp v0.2.2/go.mod h1:ISKs+tNLHA0BlhCEAiFU5CxCHNTUd7Lit4sjHBzWr7o=
 github.com/iotaledger/wasp v0.2.3 h1:xpPWQvWc52JejuIPsNRdcU67c2gMhVQl+IYWgw6Ojvk=
 github.com/iotaledger/wasp v0.2.3/go.mod h1:8yet9+GQM75rbZVYTI0K/U7MlsOzb43iAzAn1VUq4J4=
+github.com/iotaledger/wasp v0.2.5/go.mod h1:hOSb/YuQZNcGIosQnLK2afpUkm5S6++cxlNMYA7QBGU=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.3/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
@@ -1678,6 +1680,7 @@ github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529 h1:nn5Wsu0esKSJiIVhscUt
 github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529/go.mod h1:DxrIzT+xaE7yg65j358z/aeFdxmN0P9QXhEzd20vsDc=
 github.com/second-state/WasmEdge-go v0.9.0-rc3 h1:Ol6KaPguuqyd42vb9W7VCRR4V92yZdVpqUh0MWD07Y4=
 github.com/second-state/WasmEdge-go v0.9.0-rc3/go.mod h1:Q3h79fwQs7GUSOm3ZzHXK+j4cKmCFP3SKpGfFNDtqD8=
+github.com/second-state/WasmEdge-go v0.9.0/go.mod h1:Q3h79fwQs7GUSOm3ZzHXK+j4cKmCFP3SKpGfFNDtqD8=
 github.com/segmentio/kafka-go v0.1.0/go.mod h1:X6itGqS9L4jDletMsxZ7Dz+JFWxM6JHfPOCvTvk+EJo=
 github.com/segmentio/kafka-go v0.2.0 h1:HtCSf6B4gN/87yc5qTl7WsxPKQIIGXLPPM1bMCPOsoY=
 github.com/segmentio/kafka-go v0.2.0/go.mod h1:X6itGqS9L4jDletMsxZ7Dz+JFWxM6JHfPOCvTvk+EJo=
