@@ -6,21 +6,22 @@ package iscplotterycontract
 import (
 	"strconv"
 
-	"github.com/iotaledger/wasp/packages/vm/wasmlib/go/wasmlib"
+	"github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib"
+	"github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib/wasmtypes"
 )
 
 const ROUND_PERIOD = int64(86400) // 1 day
 const MAX_DIGIT = int(6)          // max random digit
-const MAX_NUMBER = int64(999999)  // the max random number
+const MAX_NUMBER = uint64(999999) // the max random number
 
-const MATCH_1_PRIZE_PERCENT = int64(2)
-const MATCH_2_PRIZE_PERCENT = int64(4)
-const MATCH_3_PRIZE_PERCENT = int64(6)
-const MATCH_4_PRIZE_PERCENT = int64(12)
-const MATCH_5_PRIZE_PERCENT = int64(25)
-const MATCH_6_PRIZE_PERCENT = int64(50)
+const MATCH_1_PRIZE_PERCENT = uint64(2)
+const MATCH_2_PRIZE_PERCENT = uint64(4)
+const MATCH_3_PRIZE_PERCENT = uint64(6)
+const MATCH_4_PRIZE_PERCENT = uint64(12)
+const MATCH_5_PRIZE_PERCENT = uint64(25)
+const MATCH_6_PRIZE_PERCENT = uint64(50)
 
-const FEE_PERCENT = int64(1)
+const FEE_PERCENT = uint64(1)
 
 func funcInit(ctx wasmlib.ScFuncContext, f *InitContext) {
 	if f.Params.Owner().Exists() {
@@ -42,7 +43,7 @@ func funcCreateTicket(ctx wasmlib.ScFuncContext, f *CreateTicketContext) {
 	caller := ctx.Caller()
 
 	incoming := ctx.Incoming()
-	incomingAmount := incoming.Balance(wasmlib.IOTA)
+	incomingAmount := incoming.Balance(wasmtypes.IOTA)
 
 	// get params
 	buyNumber := f.Params.Number().Value()
@@ -84,7 +85,7 @@ func funcDraw(ctx wasmlib.ScFuncContext, f *DrawContext) {
 	currentRound := rounds.GetRound(currentRoundIdx).Value()
 
 	winningNumber := ctx.Random(MAX_NUMBER)
-	winningNumberStr := strconv.FormatInt(winningNumber, 10)
+	winningNumberStr := strconv.FormatUint(winningNumber, 10)
 
 	// pading zeroes to the left
 	for i := len(winningNumberStr); i < MAX_DIGIT; i++ {
@@ -96,7 +97,7 @@ func funcDraw(ctx wasmlib.ScFuncContext, f *DrawContext) {
 
 	// calculate prize pool
 	prizePool := currentRound.PrizePool
-	prizePoolsByDigit := make(map[int]int64)
+	prizePoolsByDigit := make(map[int]uint64)
 	prizePoolsByDigit[0] = 0
 	prizePoolsByDigit[1] = prizePool * MATCH_1_PRIZE_PERCENT / 100
 	prizePoolsByDigit[2] = prizePool * MATCH_2_PRIZE_PERCENT / 100
@@ -106,8 +107,8 @@ func funcDraw(ctx wasmlib.ScFuncContext, f *DrawContext) {
 	prizePoolsByDigit[6] = prizePool * MATCH_6_PRIZE_PERCENT / 100
 
 	// count winner by digit
-	prizeWinnerByDigit := make(map[int]int64)
-	for i := int32(0); i <= ticketsLen; i++ {
+	prizeWinnerByDigit := make(map[int]uint64)
+	for i := uint32(0); i <= ticketsLen; i++ {
 		ticket := tickets.GetTicket(i).Value()
 
 		matchedCount := 0
@@ -123,7 +124,7 @@ func funcDraw(ctx wasmlib.ScFuncContext, f *DrawContext) {
 	}
 
 	// destribute prize pool
-	prizePerTicketsByDigit := make(map[int]int64)
+	prizePerTicketsByDigit := make(map[int]uint64)
 	for i := 1; i <= MAX_DIGIT; i++ {
 		prizePerTicketsByDigit[i] = prizePoolsByDigit[i] / prizeWinnerByDigit[i]
 	}
@@ -135,8 +136,8 @@ func funcGetMyTickets(ctx wasmlib.ScFuncContext, f *GetMyTicketsContext) {
 	resultTickets := f.Results.Tickets()
 	stateTickets := f.State.Tickets()
 	stateTicketsLen := stateTickets.Length()
-	var n int32
-	for i := int32(0); i < stateTicketsLen; i++ {
+	var n uint32
+	for i := uint32(0); i < stateTicketsLen; i++ {
 		Ticket := stateTickets.GetTicket(i).Value()
 		if Ticket.Buyer == ctx.Caller() {
 			resultTickets.GetTicket(n).SetValue(Ticket)
@@ -149,8 +150,8 @@ func funcGetMyHistoryTickets(ctx wasmlib.ScFuncContext, f *GetMyHistoryTicketsCo
 	resultTickets := f.Results.Tickets()
 	stateHistoryTickets := f.State.HistoryTickets()
 	stateHistoryTicketsLen := stateHistoryTickets.Length()
-	var n int32
-	for i := int32(0); i < stateHistoryTicketsLen; i++ {
+	var n uint32
+	for i := uint32(0); i < stateHistoryTicketsLen; i++ {
 		Ticket := stateHistoryTickets.GetTicket(i).Value()
 		if Ticket.Buyer == ctx.Caller() {
 			resultTickets.GetTicket(n).SetValue(Ticket)

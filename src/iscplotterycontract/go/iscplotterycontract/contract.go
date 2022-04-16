@@ -7,7 +7,7 @@
 
 package iscplotterycontract
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib/go/wasmlib"
+import "github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib"
 
 type CreateTicketCall struct {
 	Func    *wasmlib.ScFunc
@@ -60,7 +60,7 @@ var ScFuncs Funcs
 
 func (sc Funcs) CreateTicket(ctx wasmlib.ScFuncCallContext) *CreateTicketCall {
 	f := &CreateTicketCall{Func: wasmlib.NewScFunc(ctx, HScName, HFuncCreateTicket)}
-	f.Func.SetPtrs(&f.Params.id, nil)
+	f.Params.proxy = wasmlib.NewCallParamsProxy(&f.Func.ScView)
 	return f
 }
 
@@ -70,42 +70,43 @@ func (sc Funcs) Draw(ctx wasmlib.ScFuncCallContext) *DrawCall {
 
 func (sc Funcs) GetMyHistoryTickets(ctx wasmlib.ScFuncCallContext) *GetMyHistoryTicketsCall {
 	f := &GetMyHistoryTicketsCall{Func: wasmlib.NewScFunc(ctx, HScName, HFuncGetMyHistoryTickets)}
-	f.Func.SetPtrs(nil, &f.Results.id)
+	wasmlib.NewCallResultsProxy(&f.Func.ScView, &f.Results.proxy)
 	return f
 }
 
 func (sc Funcs) GetMyTickets(ctx wasmlib.ScFuncCallContext) *GetMyTicketsCall {
 	f := &GetMyTicketsCall{Func: wasmlib.NewScFunc(ctx, HScName, HFuncGetMyTickets)}
-	f.Func.SetPtrs(nil, &f.Results.id)
+	wasmlib.NewCallResultsProxy(&f.Func.ScView, &f.Results.proxy)
 	return f
 }
 
 func (sc Funcs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
-	f := &InitCall{Func: wasmlib.NewScInitFunc(ctx, HScName, HFuncInit, keyMap[:], idxMap[:])}
-	f.Func.SetPtrs(&f.Params.id, nil)
+	f := &InitCall{Func: wasmlib.NewScInitFunc(ctx, HScName, HFuncInit)}
+	f.Params.proxy = wasmlib.NewCallParamsProxy(&f.Func.ScView)
 	return f
 }
 
 func (sc Funcs) SetOwner(ctx wasmlib.ScFuncCallContext) *SetOwnerCall {
 	f := &SetOwnerCall{Func: wasmlib.NewScFunc(ctx, HScName, HFuncSetOwner)}
-	f.Func.SetPtrs(&f.Params.id, nil)
+	f.Params.proxy = wasmlib.NewCallParamsProxy(&f.Func.ScView)
 	return f
 }
 
 func (sc Funcs) GetCurrentRound(ctx wasmlib.ScViewCallContext) *GetCurrentRoundCall {
 	f := &GetCurrentRoundCall{Func: wasmlib.NewScView(ctx, HScName, HViewGetCurrentRound)}
-	f.Func.SetPtrs(nil, &f.Results.id)
+	wasmlib.NewCallResultsProxy(f.Func, &f.Results.proxy)
 	return f
 }
 
 func (sc Funcs) GetOwner(ctx wasmlib.ScViewCallContext) *GetOwnerCall {
 	f := &GetOwnerCall{Func: wasmlib.NewScView(ctx, HScName, HViewGetOwner)}
-	f.Func.SetPtrs(nil, &f.Results.id)
+	wasmlib.NewCallResultsProxy(f.Func, &f.Results.proxy)
 	return f
 }
 
 func (sc Funcs) GetRound(ctx wasmlib.ScViewCallContext) *GetRoundCall {
 	f := &GetRoundCall{Func: wasmlib.NewScView(ctx, HScName, HViewGetRound)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	f.Params.proxy = wasmlib.NewCallParamsProxy(f.Func)
+	wasmlib.NewCallResultsProxy(f.Func, &f.Results.proxy)
 	return f
 }

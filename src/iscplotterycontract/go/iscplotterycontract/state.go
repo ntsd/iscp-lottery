@@ -7,86 +7,88 @@
 
 package iscplotterycontract
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib/go/wasmlib"
+import "github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib/wasmtypes"
 
 type ArrayOfImmutableRound struct {
-	objID int32
+	proxy wasmtypes.Proxy
 }
 
-func (a ArrayOfImmutableRound) Length() int32 {
-	return wasmlib.GetLength(a.objID)
+func (a ArrayOfImmutableRound) Length() uint32 {
+	return a.proxy.Length()
 }
 
-func (a ArrayOfImmutableRound) GetRound(index int32) ImmutableRound {
-	return ImmutableRound{objID: a.objID, keyID: wasmlib.Key32(index)}
+func (a ArrayOfImmutableRound) GetRound(index uint32) ImmutableRound {
+	return ImmutableRound{proxy: a.proxy.Index(index)}
 }
 
 type ImmutableISCPLotteryContractState struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s ImmutableISCPLotteryContractState) CurrentRoundIdx() wasmlib.ScImmutableInt32 {
-	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxStateCurrentRoundIdx])
+func (s ImmutableISCPLotteryContractState) CurrentRoundIdx() wasmtypes.ScImmutableUint32 {
+	return wasmtypes.NewScImmutableUint32(s.proxy.Root(StateCurrentRoundIdx))
 }
 
 func (s ImmutableISCPLotteryContractState) HistoryTickets() ArrayOfImmutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxStateHistoryTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfImmutableTicket{objID: arrID}
+	return ArrayOfImmutableTicket{proxy: s.proxy.Root(StateHistoryTickets)}
 }
 
-func (s ImmutableISCPLotteryContractState) Owner() wasmlib.ScImmutableAgentID {
-	return wasmlib.NewScImmutableAgentID(s.id, idxMap[IdxStateOwner])
+func (s ImmutableISCPLotteryContractState) Owner() wasmtypes.ScImmutableAgentID {
+	return wasmtypes.NewScImmutableAgentID(s.proxy.Root(StateOwner))
 }
 
 func (s ImmutableISCPLotteryContractState) Rounds() ArrayOfImmutableRound {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxStateRounds], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfImmutableRound{objID: arrID}
+	return ArrayOfImmutableRound{proxy: s.proxy.Root(StateRounds)}
 }
 
 func (s ImmutableISCPLotteryContractState) Tickets() ArrayOfImmutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxStateTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfImmutableTicket{objID: arrID}
+	return ArrayOfImmutableTicket{proxy: s.proxy.Root(StateTickets)}
 }
 
 type ArrayOfMutableRound struct {
-	objID int32
+	proxy wasmtypes.Proxy
+}
+
+func (a ArrayOfMutableRound) AppendRound() MutableRound {
+	return MutableRound{proxy: a.proxy.Append()}
 }
 
 func (a ArrayOfMutableRound) Clear() {
-	wasmlib.Clear(a.objID)
+	a.proxy.ClearArray()
 }
 
-func (a ArrayOfMutableRound) Length() int32 {
-	return wasmlib.GetLength(a.objID)
+func (a ArrayOfMutableRound) Length() uint32 {
+	return a.proxy.Length()
 }
 
-func (a ArrayOfMutableRound) GetRound(index int32) MutableRound {
-	return MutableRound{objID: a.objID, keyID: wasmlib.Key32(index)}
+func (a ArrayOfMutableRound) GetRound(index uint32) MutableRound {
+	return MutableRound{proxy: a.proxy.Index(index)}
 }
 
 type MutableISCPLotteryContractState struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s MutableISCPLotteryContractState) CurrentRoundIdx() wasmlib.ScMutableInt32 {
-	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxStateCurrentRoundIdx])
+func (s MutableISCPLotteryContractState) AsImmutable() ImmutableISCPLotteryContractState {
+	return ImmutableISCPLotteryContractState(s)
+}
+
+func (s MutableISCPLotteryContractState) CurrentRoundIdx() wasmtypes.ScMutableUint32 {
+	return wasmtypes.NewScMutableUint32(s.proxy.Root(StateCurrentRoundIdx))
 }
 
 func (s MutableISCPLotteryContractState) HistoryTickets() ArrayOfMutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxStateHistoryTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfMutableTicket{objID: arrID}
+	return ArrayOfMutableTicket{proxy: s.proxy.Root(StateHistoryTickets)}
 }
 
-func (s MutableISCPLotteryContractState) Owner() wasmlib.ScMutableAgentID {
-	return wasmlib.NewScMutableAgentID(s.id, idxMap[IdxStateOwner])
+func (s MutableISCPLotteryContractState) Owner() wasmtypes.ScMutableAgentID {
+	return wasmtypes.NewScMutableAgentID(s.proxy.Root(StateOwner))
 }
 
 func (s MutableISCPLotteryContractState) Rounds() ArrayOfMutableRound {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxStateRounds], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfMutableRound{objID: arrID}
+	return ArrayOfMutableRound{proxy: s.proxy.Root(StateRounds)}
 }
 
 func (s MutableISCPLotteryContractState) Tickets() ArrayOfMutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxStateTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfMutableTicket{objID: arrID}
+	return ArrayOfMutableTicket{proxy: s.proxy.Root(StateTickets)}
 }

@@ -7,116 +7,116 @@
 
 package iscplotterycontract
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib/go/wasmlib"
+import "github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib/wasmtypes"
 
 type ArrayOfImmutableTicket struct {
-	objID int32
+	proxy wasmtypes.Proxy
 }
 
-func (a ArrayOfImmutableTicket) Length() int32 {
-	return wasmlib.GetLength(a.objID)
+func (a ArrayOfImmutableTicket) Length() uint32 {
+	return a.proxy.Length()
 }
 
-func (a ArrayOfImmutableTicket) GetTicket(index int32) ImmutableTicket {
-	return ImmutableTicket{objID: a.objID, keyID: wasmlib.Key32(index)}
+func (a ArrayOfImmutableTicket) GetTicket(index uint32) ImmutableTicket {
+	return ImmutableTicket{proxy: a.proxy.Index(index)}
 }
 
 type ImmutableGetMyHistoryTicketsResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s ImmutableGetMyHistoryTicketsResults) Tickets() ArrayOfImmutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxResultTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfImmutableTicket{objID: arrID}
+	return ArrayOfImmutableTicket{proxy: s.proxy.Root(ResultTickets)}
 }
 
 type ArrayOfMutableTicket struct {
-	objID int32
+	proxy wasmtypes.Proxy
+}
+
+func (a ArrayOfMutableTicket) AppendTicket() MutableTicket {
+	return MutableTicket{proxy: a.proxy.Append()}
 }
 
 func (a ArrayOfMutableTicket) Clear() {
-	wasmlib.Clear(a.objID)
+	a.proxy.ClearArray()
 }
 
-func (a ArrayOfMutableTicket) Length() int32 {
-	return wasmlib.GetLength(a.objID)
+func (a ArrayOfMutableTicket) Length() uint32 {
+	return a.proxy.Length()
 }
 
-func (a ArrayOfMutableTicket) GetTicket(index int32) MutableTicket {
-	return MutableTicket{objID: a.objID, keyID: wasmlib.Key32(index)}
+func (a ArrayOfMutableTicket) GetTicket(index uint32) MutableTicket {
+	return MutableTicket{proxy: a.proxy.Index(index)}
 }
 
 type MutableGetMyHistoryTicketsResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s MutableGetMyHistoryTicketsResults) Tickets() ArrayOfMutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxResultTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfMutableTicket{objID: arrID}
+	return ArrayOfMutableTicket{proxy: s.proxy.Root(ResultTickets)}
 }
 
 type ImmutableGetMyTicketsResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s ImmutableGetMyTicketsResults) Tickets() ArrayOfImmutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxResultTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfImmutableTicket{objID: arrID}
+	return ArrayOfImmutableTicket{proxy: s.proxy.Root(ResultTickets)}
 }
 
 type MutableGetMyTicketsResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s MutableGetMyTicketsResults) Tickets() ArrayOfMutableTicket {
-	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxResultTickets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
-	return ArrayOfMutableTicket{objID: arrID}
+	return ArrayOfMutableTicket{proxy: s.proxy.Root(ResultTickets)}
 }
 
 type ImmutableGetCurrentRoundResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s ImmutableGetCurrentRoundResults) Round() ImmutableRound {
-	return ImmutableRound{objID: s.id, keyID: idxMap[IdxResultRound]}
+	return ImmutableRound{proxy: s.proxy.Root(ResultRound)}
 }
 
 type MutableGetCurrentRoundResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s MutableGetCurrentRoundResults) Round() MutableRound {
-	return MutableRound{objID: s.id, keyID: idxMap[IdxResultRound]}
+	return MutableRound{proxy: s.proxy.Root(ResultRound)}
 }
 
 type ImmutableGetOwnerResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s ImmutableGetOwnerResults) Owner() wasmlib.ScImmutableAgentID {
-	return wasmlib.NewScImmutableAgentID(s.id, idxMap[IdxResultOwner])
+func (s ImmutableGetOwnerResults) Owner() wasmtypes.ScImmutableAgentID {
+	return wasmtypes.NewScImmutableAgentID(s.proxy.Root(ResultOwner))
 }
 
 type MutableGetOwnerResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s MutableGetOwnerResults) Owner() wasmlib.ScMutableAgentID {
-	return wasmlib.NewScMutableAgentID(s.id, idxMap[IdxResultOwner])
+func (s MutableGetOwnerResults) Owner() wasmtypes.ScMutableAgentID {
+	return wasmtypes.NewScMutableAgentID(s.proxy.Root(ResultOwner))
 }
 
 type ImmutableGetRoundResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s ImmutableGetRoundResults) Round() ImmutableRound {
-	return ImmutableRound{objID: s.id, keyID: idxMap[IdxResultRound]}
+	return ImmutableRound{proxy: s.proxy.Root(ResultRound)}
 }
 
 type MutableGetRoundResults struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
 func (s MutableGetRoundResults) Round() MutableRound {
-	return MutableRound{objID: s.id, keyID: idxMap[IdxResultRound]}
+	return MutableRound{proxy: s.proxy.Root(ResultRound)}
 }

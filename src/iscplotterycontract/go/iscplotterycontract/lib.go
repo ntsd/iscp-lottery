@@ -8,23 +8,42 @@
 //nolint:dupl
 package iscplotterycontract
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib/go/wasmlib"
+import "github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib"
 
-func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddFunc(FuncCreateTicket,        funcCreateTicketThunk)
-	exports.AddFunc(FuncDraw,                funcDrawThunk)
-	exports.AddFunc(FuncGetMyHistoryTickets, funcGetMyHistoryTicketsThunk)
-	exports.AddFunc(FuncGetMyTickets,        funcGetMyTicketsThunk)
-	exports.AddFunc(FuncInit,                funcInitThunk)
-	exports.AddFunc(FuncSetOwner,            funcSetOwnerThunk)
-	exports.AddView(ViewGetCurrentRound,     viewGetCurrentRoundThunk)
-	exports.AddView(ViewGetOwner,            viewGetOwnerThunk)
-	exports.AddView(ViewGetRound,            viewGetRoundThunk)
+var exportMap = wasmlib.ScExportMap{
+	Names: []string{
+    	FuncCreateTicket,
+    	FuncDraw,
+    	FuncGetMyHistoryTickets,
+    	FuncGetMyTickets,
+    	FuncInit,
+    	FuncSetOwner,
+    	ViewGetCurrentRound,
+    	ViewGetOwner,
+    	ViewGetRound,
+	},
+	Funcs: []wasmlib.ScFuncContextFunction{
+    	funcCreateTicketThunk,
+    	funcDrawThunk,
+    	funcGetMyHistoryTicketsThunk,
+    	funcGetMyTicketsThunk,
+    	funcInitThunk,
+    	funcSetOwnerThunk,
+	},
+	Views: []wasmlib.ScViewContextFunction{
+    	viewGetCurrentRoundThunk,
+    	viewGetOwnerThunk,
+    	viewGetRoundThunk,
+	},
+}
 
-	for i, key := range keyMap {
-		idxMap[i] = key.KeyID()
+func OnLoad(index int32) {
+	if index >= 0 {
+		wasmlib.ScExportsCall(index, &exportMap)
+		return
 	}
+
+	wasmlib.ScExportsExport(&exportMap)
 }
 
 type CreateTicketContext struct {
@@ -36,10 +55,10 @@ func funcCreateTicketThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("iscplotterycontract.funcCreateTicket")
 	f := &CreateTicketContext{
 		Params: ImmutableCreateTicketParams{
-			id: wasmlib.OBJ_ID_PARAMS,
+			proxy: wasmlib.NewParamsProxy(),
 		},
 		State: MutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
+			proxy: wasmlib.NewStateProxy(),
 		},
 	}
 	ctx.Require(f.Params.Number().Exists(), "missing mandatory number")
@@ -53,15 +72,15 @@ type DrawContext struct {
 
 func funcDrawThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("iscplotterycontract.funcDraw")
+	f := &DrawContext{
+		State: MutableISCPLotteryContractState{
+			proxy: wasmlib.NewStateProxy(),
+		},
+	}
 
 	// only SC itself can invoke this function
 	ctx.Require(ctx.Caller() == ctx.AccountID(), "no permission")
 
-	f := &DrawContext{
-		State: MutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
-		},
-	}
 	funcDraw(ctx, f)
 	ctx.Log("iscplotterycontract.funcDraw ok")
 }
@@ -73,15 +92,17 @@ type GetMyHistoryTicketsContext struct {
 
 func funcGetMyHistoryTicketsThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("iscplotterycontract.funcGetMyHistoryTickets")
+	results := wasmlib.NewScDict()
 	f := &GetMyHistoryTicketsContext{
 		Results: MutableGetMyHistoryTicketsResults{
-			id: wasmlib.OBJ_ID_RESULTS,
+			proxy: results.AsProxy(),
 		},
 		State: MutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
+			proxy: wasmlib.NewStateProxy(),
 		},
 	}
 	funcGetMyHistoryTickets(ctx, f)
+	ctx.Results(results)
 	ctx.Log("iscplotterycontract.funcGetMyHistoryTickets ok")
 }
 
@@ -92,15 +113,17 @@ type GetMyTicketsContext struct {
 
 func funcGetMyTicketsThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("iscplotterycontract.funcGetMyTickets")
+	results := wasmlib.NewScDict()
 	f := &GetMyTicketsContext{
 		Results: MutableGetMyTicketsResults{
-			id: wasmlib.OBJ_ID_RESULTS,
+			proxy: results.AsProxy(),
 		},
 		State: MutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
+			proxy: wasmlib.NewStateProxy(),
 		},
 	}
 	funcGetMyTickets(ctx, f)
+	ctx.Results(results)
 	ctx.Log("iscplotterycontract.funcGetMyTickets ok")
 }
 
@@ -113,10 +136,10 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("iscplotterycontract.funcInit")
 	f := &InitContext{
 		Params: ImmutableInitParams{
-			id: wasmlib.OBJ_ID_PARAMS,
+			proxy: wasmlib.NewParamsProxy(),
 		},
 		State: MutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
+			proxy: wasmlib.NewStateProxy(),
 		},
 	}
 	funcInit(ctx, f)
@@ -130,20 +153,20 @@ type SetOwnerContext struct {
 
 func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("iscplotterycontract.funcSetOwner")
+	f := &SetOwnerContext{
+		Params: ImmutableSetOwnerParams{
+			proxy: wasmlib.NewParamsProxy(),
+		},
+		State: MutableISCPLotteryContractState{
+			proxy: wasmlib.NewStateProxy(),
+		},
+	}
 
 	// current owner of this smart contract
-	access := ctx.State().GetAgentID(wasmlib.Key("owner"))
+	access := f.State.Owner()
 	ctx.Require(access.Exists(), "access not set: owner")
 	ctx.Require(ctx.Caller() == access.Value(), "no permission")
 
-	f := &SetOwnerContext{
-		Params: ImmutableSetOwnerParams{
-			id: wasmlib.OBJ_ID_PARAMS,
-		},
-		State: MutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
-		},
-	}
 	ctx.Require(f.Params.Owner().Exists(), "missing mandatory owner")
 	funcSetOwner(ctx, f)
 	ctx.Log("iscplotterycontract.funcSetOwner ok")
@@ -156,15 +179,17 @@ type GetCurrentRoundContext struct {
 
 func viewGetCurrentRoundThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("iscplotterycontract.viewGetCurrentRound")
+	results := wasmlib.NewScDict()
 	f := &GetCurrentRoundContext{
 		Results: MutableGetCurrentRoundResults{
-			id: wasmlib.OBJ_ID_RESULTS,
+			proxy: results.AsProxy(),
 		},
 		State: ImmutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
+			proxy: wasmlib.NewStateProxy(),
 		},
 	}
 	viewGetCurrentRound(ctx, f)
+	ctx.Results(results)
 	ctx.Log("iscplotterycontract.viewGetCurrentRound ok")
 }
 
@@ -175,15 +200,17 @@ type GetOwnerContext struct {
 
 func viewGetOwnerThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("iscplotterycontract.viewGetOwner")
+	results := wasmlib.NewScDict()
 	f := &GetOwnerContext{
 		Results: MutableGetOwnerResults{
-			id: wasmlib.OBJ_ID_RESULTS,
+			proxy: results.AsProxy(),
 		},
 		State: ImmutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
+			proxy: wasmlib.NewStateProxy(),
 		},
 	}
 	viewGetOwner(ctx, f)
+	ctx.Results(results)
 	ctx.Log("iscplotterycontract.viewGetOwner ok")
 }
 
@@ -195,18 +222,20 @@ type GetRoundContext struct {
 
 func viewGetRoundThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("iscplotterycontract.viewGetRound")
+	results := wasmlib.NewScDict()
 	f := &GetRoundContext{
 		Params: ImmutableGetRoundParams{
-			id: wasmlib.OBJ_ID_PARAMS,
+			proxy: wasmlib.NewParamsProxy(),
 		},
 		Results: MutableGetRoundResults{
-			id: wasmlib.OBJ_ID_RESULTS,
+			proxy: results.AsProxy(),
 		},
 		State: ImmutableISCPLotteryContractState{
-			id: wasmlib.OBJ_ID_STATE,
+			proxy: wasmlib.NewStateProxy(),
 		},
 	}
 	ctx.Require(f.Params.RoundIdx().Exists(), "missing mandatory roundIdx")
 	viewGetRound(ctx, f)
+	ctx.Results(results)
 	ctx.Log("iscplotterycontract.viewGetRound ok")
 }

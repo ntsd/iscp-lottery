@@ -24,7 +24,7 @@ for now we using `goshimmer.sc.iota.org:5000`
 make run-wasp
 ```
 
-Run local Shimmer and Wasp node by Docker
+Run local Go Shimmer and Wasp node by Docker (Optional)
 
 ```shell
 cd tools/devnet
@@ -33,18 +33,20 @@ HOST=0.0.0.0 docker-compose up -d
 
 ## Configuring wasp-cli
 
+Set up Go Shimmer API
+
 ```shell
 wasp-cli init
 
 # Set go shimmer api
 wasp-cli set goshimmer.api https://api.goshimmer.sc.iota.org
+```
 
-# orfor local go shimmer
+For local Go Shimmer api (Optional)
+
+```shell
+# or for local go shimmer
 wasp-cli set goshimmer.api 127.0.0.1:8080
-
-# Request fund
-wasp-cli request-funds
-wasp-cli balance
 
 # set wasp address for a local node
 wasp-cli set wasp.0.api 127.0.0.1:9090
@@ -52,7 +54,17 @@ wasp-cli set wasp.0.nanomsg 127.0.0.1:5550
 wasp-cli set wasp.0.peering 127.0.0.1:4000
 ```
 
+Requesting fund
+
+```shell
+# Request fund
+wasp-cli request-funds
+wasp-cli balance
+```
+
 ## Deploy a Chain
+
+Trust node
 
 ```Shell
 # Trust node
@@ -63,7 +75,11 @@ wasp-cli peering trust $(wasp-cli peering info | grep PubKey | sed -e "s/^PubKey
 
 # checking trusted nodes
 wasp-cli peering list-trusted
+```
 
+Deploy Chain
+
+```shell
 # Deploy The Chain
 # `committee` will correspond to wasp.0, wasp.1 in `wasp-cli.json`
 # `quorum` is the minimum amount of nodes required to form a consensus (recommend floor(N*2/3)+1 whre N = number of nodes)

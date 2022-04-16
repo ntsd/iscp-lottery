@@ -7,12 +7,12 @@
 
 package iscplotterycontract
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib/go/wasmlib"
+import "github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib/wasmtypes"
 
 const (
 	ScName        = "iscplotterycontract"
 	ScDescription = "ISCPLotteryContract description"
-	HScName       = wasmlib.ScHname(0x884f32dd)
+	HScName       = wasmtypes.ScHname(0x884f32dd)
 )
 
 const (
@@ -48,13 +48,13 @@ const (
 )
 
 const (
-	HFuncCreateTicket        = wasmlib.ScHname(0x7a6044ef)
-	HFuncDraw                = wasmlib.ScHname(0x436fe402)
-	HFuncGetMyHistoryTickets = wasmlib.ScHname(0x2d7c6667)
-	HFuncGetMyTickets        = wasmlib.ScHname(0x12d805ce)
-	HFuncInit                = wasmlib.ScHname(0x1f44d644)
-	HFuncSetOwner            = wasmlib.ScHname(0x2a15fe7b)
-	HViewGetCurrentRound     = wasmlib.ScHname(0x7abd711b)
-	HViewGetOwner            = wasmlib.ScHname(0x137107a6)
-	HViewGetRound            = wasmlib.ScHname(0xbea7b465)
+	HFuncCreateTicket        = wasmtypes.ScHname(0x7a6044ef)
+	HFuncDraw                = wasmtypes.ScHname(0x436fe402)
+	HFuncGetMyHistoryTickets = wasmtypes.ScHname(0x2d7c6667)
+	HFuncGetMyTickets        = wasmtypes.ScHname(0x12d805ce)
+	HFuncInit                = wasmtypes.ScHname(0x1f44d644)
+	HFuncSetOwner            = wasmtypes.ScHname(0x2a15fe7b)
+	HViewGetCurrentRound     = wasmtypes.ScHname(0x7abd711b)
+	HViewGetOwner            = wasmtypes.ScHname(0x137107a6)
+	HViewGetRound            = wasmtypes.ScHname(0xbea7b465)
 )

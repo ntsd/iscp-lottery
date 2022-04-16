@@ -7,68 +7,68 @@
 
 package iscplotterycontract
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib/go/wasmlib"
+import "github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib/wasmtypes"
 
 type ImmutableCreateTicketParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s ImmutableCreateTicketParams) Number() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamNumber])
+func (s ImmutableCreateTicketParams) Number() wasmtypes.ScImmutableString {
+	return wasmtypes.NewScImmutableString(s.proxy.Root(ParamNumber))
 }
 
 type MutableCreateTicketParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s MutableCreateTicketParams) Number() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamNumber])
+func (s MutableCreateTicketParams) Number() wasmtypes.ScMutableString {
+	return wasmtypes.NewScMutableString(s.proxy.Root(ParamNumber))
 }
 
 type ImmutableInitParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s ImmutableInitParams) Owner() wasmlib.ScImmutableAgentID {
-	return wasmlib.NewScImmutableAgentID(s.id, idxMap[IdxParamOwner])
+func (s ImmutableInitParams) Owner() wasmtypes.ScImmutableAgentID {
+	return wasmtypes.NewScImmutableAgentID(s.proxy.Root(ParamOwner))
 }
 
 type MutableInitParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s MutableInitParams) Owner() wasmlib.ScMutableAgentID {
-	return wasmlib.NewScMutableAgentID(s.id, idxMap[IdxParamOwner])
+func (s MutableInitParams) Owner() wasmtypes.ScMutableAgentID {
+	return wasmtypes.NewScMutableAgentID(s.proxy.Root(ParamOwner))
 }
 
 type ImmutableSetOwnerParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s ImmutableSetOwnerParams) Owner() wasmlib.ScImmutableAgentID {
-	return wasmlib.NewScImmutableAgentID(s.id, idxMap[IdxParamOwner])
+func (s ImmutableSetOwnerParams) Owner() wasmtypes.ScImmutableAgentID {
+	return wasmtypes.NewScImmutableAgentID(s.proxy.Root(ParamOwner))
 }
 
 type MutableSetOwnerParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s MutableSetOwnerParams) Owner() wasmlib.ScMutableAgentID {
-	return wasmlib.NewScMutableAgentID(s.id, idxMap[IdxParamOwner])
+func (s MutableSetOwnerParams) Owner() wasmtypes.ScMutableAgentID {
+	return wasmtypes.NewScMutableAgentID(s.proxy.Root(ParamOwner))
 }
 
 type ImmutableGetRoundParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s ImmutableGetRoundParams) RoundIdx() wasmlib.ScImmutableInt32 {
-	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamRoundIdx])
+func (s ImmutableGetRoundParams) RoundIdx() wasmtypes.ScImmutableUint32 {
+	return wasmtypes.NewScImmutableUint32(s.proxy.Root(ParamRoundIdx))
 }
 
 type MutableGetRoundParams struct {
-	id int32
+	proxy wasmtypes.Proxy
 }
 
-func (s MutableGetRoundParams) RoundIdx() wasmlib.ScMutableInt32 {
-	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamRoundIdx])
+func (s MutableGetRoundParams) RoundIdx() wasmtypes.ScMutableUint32 {
+	return wasmtypes.NewScMutableUint32(s.proxy.Root(ParamRoundIdx))
 }
