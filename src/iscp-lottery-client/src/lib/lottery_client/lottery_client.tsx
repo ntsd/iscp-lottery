@@ -17,7 +17,7 @@ import useWebSocket from "react-use-websocket";
 type MessageHandlers = { [key: string]: (index: number) => void };
 type ParameterResult = { [key: string]: Buffer };
 
-interface LotteryClientProviderProps { 
+interface LotteryClientProviderProps {
   children: React.ReactNode
 }
 
