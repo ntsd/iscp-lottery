@@ -21,6 +21,7 @@ interface LotteryClientProviderProps {
   children: React.ReactNode
 }
 
+
 export const LotteryClientProvider: React.FC<LotteryClientProviderProps> = ({ children }) => {
   const scName: string = Configs.contractName;
   const scHName: string = HName.HashAsString(scName);
@@ -34,6 +35,32 @@ export const LotteryClientProvider: React.FC<LotteryClientProviderProps> = ({ ch
 
   // Initialize websocket
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+  const handleVmMessage = (message: string[]): void => {
+    const messageHandlers: MessageHandlers = {
+    };
+
+    const topicIndex = 3;
+    const topic = message[topicIndex];
+
+    if (typeof messageHandlers[topic] != "undefined") {
+      messageHandlers[topic](topicIndex);
+    }
+  }
+
+  const handleMessage = (message: MessageEvent<string>): void => {
+    const msg = message.data.toString().split("|");
+
+    if (msg.length === 0) {
+      return;
+    }
+
+    if (msg[0] !== "vmmsg") {
+      return;
+    }
+
+    handleVmMessage(msg);
+  }
 
   return <>{children}</>;
 };

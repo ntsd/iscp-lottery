@@ -10,10 +10,9 @@
 
 package main
 
-import (
-	"github.com/iotaledger/wasp/packages/wasmvm/wasmvmhost"
-	"github.com/ntsd/iscp-lottery/src/iscplotterycontract/go/iscplotterycontract"
-)
+import "github.com/iotaledger/wasp/packages/wasmvm/wasmvmhost"
+
+import "github.com/ntsd/iscp-lottery/src/iscplotterycontract/go/iscplotterycontract"
 
 func main() {
 }

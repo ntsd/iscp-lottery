@@ -1,7 +1,14 @@
 name: ISCPLotteryContract
 description: ISCPLotteryContract description
 
-events: {}
+events:
+  roundFinish:
+    roundIdx: Uint32 // finished round index
+    nextRoundIdx: Uint32 // next round index
+  buy:
+    address: Address // address of the buyer
+    amount: Uint64 // amount of iotas
+    prizePool: Uint64 // iota price pool of the round
 
 structs:
   Ticket:
@@ -10,9 +17,9 @@ structs:
     roundIdx: Uint32 // the lottery round number
     buyer: AgentID // the ticket buyer
     number: String // the lottery number of the ticket
-    amount: Uint64 // iota amount of the ticket
-    prizeAmount: Uint64 // iota prize amount of the ticket
-    matchedDigit: Uint8 // how many digits matched
+    amount: Uint64 // iotas amount of the ticket
+    prizeAmount: Uint64 // iotas prize amount of the ticket
+    matchedDigit: Uint8 // digits matched of the prize
     isPaid: Bool // is the prize paid?
     createdAt: Uint64 // unix timestamp when the ticket create
   Round:
@@ -44,10 +51,10 @@ funcs:
       number: String // the lottery number of the ticket
   getMyTickets:
     results:
-      tickets: Ticket[]
+      tickets: Ticket[] // the owner tickets of the current round
   getMyHistoryTickets:
     results:
-      tickets: Ticket[]
+      tickets: Ticket[] // the owner tickets of the previous round
   draw:
     access: self // only SC itself can invoke this function
 views:

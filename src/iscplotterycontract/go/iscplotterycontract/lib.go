@@ -47,6 +47,7 @@ func OnLoad(index int32) {
 }
 
 type CreateTicketContext struct {
+	Events  ISCPLotteryContractEvents
 	Params  ImmutableCreateTicketParams
 	State   MutableISCPLotteryContractState
 }
@@ -67,6 +68,7 @@ func funcCreateTicketThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type DrawContext struct {
+	Events  ISCPLotteryContractEvents
 	State   MutableISCPLotteryContractState
 }
 
@@ -86,6 +88,7 @@ func funcDrawThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type GetMyHistoryTicketsContext struct {
+	Events  ISCPLotteryContractEvents
 	Results MutableGetMyHistoryTicketsResults
 	State   MutableISCPLotteryContractState
 }
@@ -107,6 +110,7 @@ func funcGetMyHistoryTicketsThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type GetMyTicketsContext struct {
+	Events  ISCPLotteryContractEvents
 	Results MutableGetMyTicketsResults
 	State   MutableISCPLotteryContractState
 }
@@ -128,6 +132,7 @@ func funcGetMyTicketsThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type InitContext struct {
+	Events  ISCPLotteryContractEvents
 	Params  ImmutableInitParams
 	State   MutableISCPLotteryContractState
 }
@@ -147,6 +152,7 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type SetOwnerContext struct {
+	Events  ISCPLotteryContractEvents
 	Params  ImmutableSetOwnerParams
 	State   MutableISCPLotteryContractState
 }

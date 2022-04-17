@@ -72,15 +72,15 @@ func (o MutableRound) Value() *Round {
 }
 
 type Ticket struct {
-	Amount       uint64  // iota amount of the ticket
+	Amount       uint64  // iotas amount of the ticket
 	Buyer        wasmtypes.ScAgentID  // the ticket buyer
 	CreatedAt    uint64  // unix timestamp when the ticket create
 	Id           wasmtypes.ScRequestID  // request id of the ticket
 	Idx          uint32  // index of ticket
 	IsPaid       bool  // is the prize paid?
-	MatchedDigit uint8  // how many digits matched
+	MatchedDigit uint8  // digits matched of the prize
 	Number       string  // the lottery number of the ticket
-	PrizeAmount  uint64  // iota prize amount of the ticket
+	PrizeAmount  uint64  // iotas prize amount of the ticket
 	RoundIdx     uint32  // the lottery round number
 }
 
