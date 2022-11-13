@@ -12,44 +12,44 @@ import "github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib"
 
 var exportMap = wasmlib.ScExportMap{
 	Names: []string{
-    	FuncCreateTicket,
-    	FuncDraw,
-    	FuncGetMyHistoryTickets,
-    	FuncGetMyTickets,
-    	FuncInit,
-    	FuncSetOwner,
-    	ViewGetCurrentRound,
-    	ViewGetOwner,
-    	ViewGetRound,
+		FuncCreateTicket,
+		FuncDraw,
+		FuncGetMyHistoryTickets,
+		FuncGetMyTickets,
+		FuncInit,
+		FuncSetOwner,
+		ViewGetCurrentRound,
+		ViewGetOwner,
+		ViewGetRound,
 	},
 	Funcs: []wasmlib.ScFuncContextFunction{
-    	funcCreateTicketThunk,
-    	funcDrawThunk,
-    	funcGetMyHistoryTicketsThunk,
-    	funcGetMyTicketsThunk,
-    	funcInitThunk,
-    	funcSetOwnerThunk,
+		funcCreateTicketThunk,
+		funcDrawThunk,
+		funcGetMyHistoryTicketsThunk,
+		funcGetMyTicketsThunk,
+		funcInitThunk,
+		funcSetOwnerThunk,
 	},
 	Views: []wasmlib.ScViewContextFunction{
-    	viewGetCurrentRoundThunk,
-    	viewGetOwnerThunk,
-    	viewGetRoundThunk,
+		viewGetCurrentRoundThunk,
+		viewGetOwnerThunk,
+		viewGetRoundThunk,
 	},
 }
 
 func OnLoad(index int32) {
 	if index >= 0 {
-		wasmlib.ScExportsCall(index, &exportMap)
+		exportMap.Call(index)
 		return
 	}
 
-	wasmlib.ScExportsExport(&exportMap)
+	exportMap.Export()
 }
 
 type CreateTicketContext struct {
-	Events  ISCPLotteryContractEvents
-	Params  ImmutableCreateTicketParams
-	State   MutableISCPLotteryContractState
+	Events ISCPLotteryContractEvents
+	Params ImmutableCreateTicketParams
+	State  MutableISCPLotteryContractState
 }
 
 func funcCreateTicketThunk(ctx wasmlib.ScFuncContext) {
@@ -68,8 +68,8 @@ func funcCreateTicketThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type DrawContext struct {
-	Events  ISCPLotteryContractEvents
-	State   MutableISCPLotteryContractState
+	Events ISCPLotteryContractEvents
+	State  MutableISCPLotteryContractState
 }
 
 func funcDrawThunk(ctx wasmlib.ScFuncContext) {
@@ -132,9 +132,9 @@ func funcGetMyTicketsThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type InitContext struct {
-	Events  ISCPLotteryContractEvents
-	Params  ImmutableInitParams
-	State   MutableISCPLotteryContractState
+	Events ISCPLotteryContractEvents
+	Params ImmutableInitParams
+	State  MutableISCPLotteryContractState
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
@@ -152,9 +152,9 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type SetOwnerContext struct {
-	Events  ISCPLotteryContractEvents
-	Params  ImmutableSetOwnerParams
-	State   MutableISCPLotteryContractState
+	Events ISCPLotteryContractEvents
+	Params ImmutableSetOwnerParams
+	State  MutableISCPLotteryContractState
 }
 
 func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {

@@ -8,7 +8,14 @@ events:
   buy:
     address: Address // address of the buyer
     amount: Uint64 // amount of iotas
+    roundIdx: Uint32 // the lottery round number
+  round:
+    idx: Uint32 // index of lottery round
+    ticketCount: Uint32 // number of tickets for the round
+    winningNumber: String // the winning numbers of the round
     prizePool: Uint64 // iota price pool of the round
+    drawAt: Uint64 // unix timestamp when draw of the round
+    isDrawn: Bool // is the round drawn?
 
 structs:
   Ticket:
@@ -24,6 +31,7 @@ structs:
     createdAt: Uint64 // unix timestamp when the ticket create
   Round:
     idx: Uint32 // index of lottery round
+    ticketCount: Uint32 // number of tickets for the round
     winningNumber: String // the winning numbers of the round
     prizePool: Uint64 // iota price pool of the round
     drawAt: Uint64 // unix timestamp when draw of the round

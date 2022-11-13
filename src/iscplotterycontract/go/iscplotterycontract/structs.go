@@ -14,6 +14,7 @@ type Round struct {
 	Idx           uint32  // index of lottery round
 	IsDrawn       bool  // is the round drawn?
 	PrizePool     uint64  // iota price pool of the round
+	TicketCount   uint32  // number of tickets for the round
 	WinningNumber string  // the winning numbers of the round
 }
 
@@ -24,6 +25,7 @@ func NewRoundFromBytes(buf []byte) *Round {
 	data.Idx           = wasmtypes.Uint32Decode(dec)
 	data.IsDrawn       = wasmtypes.BoolDecode(dec)
 	data.PrizePool     = wasmtypes.Uint64Decode(dec)
+	data.TicketCount   = wasmtypes.Uint32Decode(dec)
 	data.WinningNumber = wasmtypes.StringDecode(dec)
 	dec.Close()
 	return data
@@ -35,6 +37,7 @@ func (o *Round) Bytes() []byte {
 		wasmtypes.Uint32Encode(enc, o.Idx)
 		wasmtypes.BoolEncode(enc, o.IsDrawn)
 		wasmtypes.Uint64Encode(enc, o.PrizePool)
+		wasmtypes.Uint32Encode(enc, o.TicketCount)
 		wasmtypes.StringEncode(enc, o.WinningNumber)
 	return enc.Buf()
 }

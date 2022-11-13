@@ -1,75 +1,117 @@
 {
-  "database": {
-    "directory": "waspdb"
+  "app": {
+    "checkForUpdates": true,
+    "shutdown": {
+      "stopGracePeriod": "5m",
+      "log": {
+        "enabled": true,
+        "filePath": "shutdown.log"
+      }
+    }
   },
   "logger": {
-    "level": "info",
+    "level": "debug",
     "disableCaller": false,
     "disableStacktrace": true,
+    "stacktraceLevel": "panic",
     "encoding": "console",
     "outputPaths": [
-      "stdout"
+      "stdout",
+      "wasp.log"
     ],
     "disableEvents": true
   },
-  "network": {
-    "bindAddress": "0.0.0.0",
-    "externalAddress": "auto"
+  "inx": {
+    "address": "localhost:9029",
+    "maxConnectionAttempts": 30
   },
-  "node": {
-    "disablePlugins": [],
-    "enablePlugins": []
+  "database": {
+    "inMemory": false,
+    "directory": "waspdb"
   },
-  "users": {
-    "wasp": {
-      "password": "wasp",
-      "permissions": ["dashboard", "api", "chain.read", "chain.write"]
-    }
+  "registry": {
+    "useText": false,
+    "fileName": "chain-registry.json"
+  },
+  "peering": {
+    "netID": "127.0.0.1:4000",
+    "port": 4000
+  },
+  "chains": {
+    "broadcastUpToNPeers": 2,
+    "broadcastInterval": "5s",
+    "apiCacheTTL": "5m",
+    "pullMissingRequestsFromCommittee": true
+  },
+  "rawBlocks": {
+    "enabled": false,
+    "directory": "blocks"
+  },
+  "profiling": {
+    "enabled": false,
+    "bindAddress": "localhost:6060"
+  },
+  "wal": {
+    "enabled": true,
+    "directory": "wal"
+  },
+  "metrics": {
+    "enabled": true,
+    "bindAddress": "127.0.0.1:2112"
   },
   "webapi": {
+    "enabled": true,
+    "nodeOwnerAddresses": [],
+    "bindAddress": "0.0.0.0:9090",
     "auth": {
+      "scheme": "none",
       "jwt": {
-        "durationHours": 24
+        "duration": "24h"
       },
       "basic": {
         "username": "wasp"
       },
       "ip": {
-        "whitelist": ["127.0.0.1"]
-      },
-      "addRoutes": true,
-      "scheme": "ip"
-    },
-    "bindAddress": "0.0.0.0:9090"
+        "whitelist": [
+          "127.0.0.1"
+        ]
+      }
+    }
   },
-  "dashboard": {
-    "auth": {
-      "jwt": {
-        "durationHours": 24
-      },
-      "basic": {
-        "username": "wasp"
-      },
-      "ip": {
-        "whitelist": ["127.0.0.1"]
-      },
-      "addRoutes": true,
-      "scheme": "basic"
-    },
-    "bindAddress": "0.0.0.0:7000"
-  },
-  "peering":{
-    "port": 4000,
-    "netid": "127.0.0.1:4000"
-  },
-  "nodeconn": {
-    "address": "goshimmer.sc.iota.org:5000"
-  },
-  "nanomsg":{
+  "nanomsg": {
+    "enabled": true,
     "port": 5550
   },
-  "metrics":{
-    "bindAddress": "127.0.0.1:2112",
-    "enabled": true
+  "dashboard": {
+    "enabled": true,
+    "bindAddress": "0.0.0.0:7000",
+    "exploreAddressURL": "",
+    "auth": {
+      "scheme": "basic",
+      "jwt": {
+        "duration": "24h"
+      },
+      "basic": {
+        "username": "wasp"
+      },
+      "ip": {
+        "whitelist": [
+          "127.0.0.1"
+        ]
+      }
+    }
+  },
+  "users": {
+    "users": {
+      "wasp": {
+        "Password": "wasp",
+        "Permissions": [
+          "dashboard",
+          "api",
+          "chain.read",
+          "chain.write"
+        ]
+      }
+    }
   }
 }

@@ -7,12 +7,11 @@ import (
 	"strconv"
 
 	"github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib"
-	"github.com/iotaledger/wasp/packages/wasmvm/wasmlib/go/wasmlib/wasmtypes"
 )
 
-const ROUND_PERIOD = int64(86400) // 1 day
-const MAX_DIGIT = int(6)          // max random digit
-const MAX_NUMBER = uint64(999999) // the max random number
+const ROUND_PERIOD = uint64(86400) // 1 day
+const MAX_DIGIT = int(6)           // max random digit
+const MAX_NUMBER = uint64(999999)  // the max random number
 
 const MATCH_1_PRIZE_PERCENT = uint64(2)
 const MATCH_2_PRIZE_PERCENT = uint64(4)
@@ -21,14 +20,14 @@ const MATCH_4_PRIZE_PERCENT = uint64(12)
 const MATCH_5_PRIZE_PERCENT = uint64(25)
 const MATCH_6_PRIZE_PERCENT = uint64(50)
 
-const FEE_PERCENT = uint64(1)
+const FIXED_FEE = uint64(1) // the fee per buy to avoid spammer
 
 func funcInit(ctx wasmlib.ScFuncContext, f *InitContext) {
 	if f.Params.Owner().Exists() {
 		f.State.Owner().SetValue(f.Params.Owner().Value())
 		return
 	}
-	f.State.Owner().SetValue(ctx.ContractCreator())
+	f.State.Owner().SetValue(ctx.RequestSender())
 }
 
 func funcSetOwner(ctx wasmlib.ScFuncContext, f *SetOwnerContext) {
@@ -42,8 +41,17 @@ func viewGetOwner(ctx wasmlib.ScViewContext, f *GetOwnerContext) {
 func funcCreateTicket(ctx wasmlib.ScFuncContext, f *CreateTicketContext) {
 	caller := ctx.Caller()
 
-	incoming := ctx.Incoming()
-	incomingAmount := incoming.Balance(wasmtypes.IOTA)
+	// Create ScBalances proxy to the allowance balances for this request.
+	// Note that ScBalances wraps an ScImmutableMap of token color/amount combinations
+	incoming := ctx.Allowance()
+	incomingAmount := incoming.BaseTokens()
+
+	// minus amount by fixed fee
+	incomingAmount -= FIXED_FEE
+	if incomingAmount <= 0 {
+		ctx.Log("invalid incoming amount")
+		return
+	}
 
 	// get params
 	buyNumber := f.Params.Number().Value()
@@ -73,13 +81,25 @@ func funcCreateTicket(ctx wasmlib.ScFuncContext, f *CreateTicketContext) {
 	tickets.GetTicket(ticketsLen).SetValue(ticket)
 
 	currentRound.PrizePool += incomingAmount
+	currentRound.TicketCount += 1
 	rounds.GetRound(currentRoundIdx).SetValue(currentRound)
+
+	f.Events.Buy(caller.Address(), incomingAmount, currentRoundIdx)
+	f.Events.Round(
+		currentRound.DrawAt,
+		currentRound.Idx,
+		currentRound.IsDrawn,
+		currentRound.PrizePool,
+		currentRound.TicketCount,
+		currentRound.WinningNumber,
+	)
 }
 
 func funcDraw(ctx wasmlib.ScFuncContext, f *DrawContext) {
 	// get state
 	tickets := f.State.Tickets()
 	ticketsLen := tickets.Length()
+	historyTickets := f.State.HistoryTickets()
 	currentRoundIdx := f.State.CurrentRoundIdx().Value()
 	rounds := f.State.Rounds()
 	currentRound := rounds.GetRound(currentRoundIdx).Value()
@@ -117,19 +137,50 @@ func funcDraw(ctx wasmlib.ScFuncContext, f *DrawContext) {
 				matchedCount += 1
 			}
 		}
-		prizeWinnerByDigit[matchedCount] += 1
+		prizeWinnerByDigit[matchedCount] += ticket.Amount
 
 		ticket.MatchedDigit = uint8(matchedCount)
 		tickets.GetTicket(i).SetValue(ticket)
 	}
 
-	// destribute prize pool
+	// distribute prize pool
 	prizePerTicketsByDigit := make(map[int]uint64)
 	for i := 1; i <= MAX_DIGIT; i++ {
 		prizePerTicketsByDigit[i] = prizePoolsByDigit[i] / prizeWinnerByDigit[i]
 	}
 
+	// pay tickets
+	for i := uint32(0); i <= ticketsLen; i++ {
+		ticket := tickets.GetTicket(i).Value()
+
+		paidAmount := prizePerTicketsByDigit[int(ticket.MatchedDigit)]
+		if paidAmount > 0 {
+			// tranfers amount to the ticket buyer
+			transfers := wasmlib.NewScTransferBaseTokens(paidAmount)
+			ctx.Send(ticket.Buyer.Address(), transfers)
+			ticket.IsPaid = true
+		}
+
+		ticket.PrizeAmount = paidAmount
+
+		// add ticket to history tickets
+		historyTickets.GetTicket(i).SetValue(ticket)
+
+		// clear ticket on the current round
+		tickets.GetTicket(i).Delete()
+	}
+
 	// new round
+	newRound := &Round{
+		Idx:           currentRoundIdx + 1,
+		DrawAt:        ctx.Timestamp() + ROUND_PERIOD,
+		IsDrawn:       false,
+		PrizePool:     0,
+		TicketCount:   0,
+		WinningNumber: "",
+	}
+	rounds.GetRound(newRound.Idx).SetValue(newRound)
+	f.State.CurrentRoundIdx().SetValue(newRound.Idx)
 }
 
 func funcGetMyTickets(ctx wasmlib.ScFuncContext, f *GetMyTicketsContext) {

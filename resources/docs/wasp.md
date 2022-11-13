@@ -9,7 +9,7 @@ Install RockDB <https://github.com/facebook/rocksdb/blob/master/INSTALL.md>
 ```SHELL
 git clone -b v0.2.5 https://github.com/iotaledger/wasp
 cd wasp
-make install
+make install # or make build if you don't want the path
 ```
 
 ## Run A Wasp node

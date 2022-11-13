@@ -6,8 +6,8 @@ package test
 import (
 	"testing"
 
-	"github.com/ntsd/iscp-lottery/src/iscplotterycontract/go/iscplotterycontract"
 	"github.com/iotaledger/wasp/packages/wasmvm/wasmsolo"
+	"github.com/ntsd/iscp-lottery/src/iscplotterycontract/go/iscplotterycontract"
 	"github.com/stretchr/testify/require"
 )
 

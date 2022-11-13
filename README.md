@@ -4,7 +4,7 @@ A decentralised lottery system on IOTA Smart Contract Protocol (ISCP). Inspirati
 
 ## Requirements
 
-- WASP v0.2.5
+- WASP v0.3.8
 
 - TinyGo
 
